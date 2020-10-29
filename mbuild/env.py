@@ -383,6 +383,19 @@ class env_t(object):
         return self._check_registry_environment('NUMBER_OF_PROCESSORS')
 
 
+    def __deepcopy__(self, memo):
+        ret = env_t.__new__(env_t)
+        ret.env = {}
+        for k, v in self.env.items():
+            if k != 'uname':
+                ret.env[k] = copy.deepcopy(v, memo)
+        ret.env['uname'] = platform.uname()
+        ret.parsed_args = self.parsed_args
+        ret.added_common_knobs = self.added_common_knobs
+        ret.added_default_knobs = self.added_default_knobs
+        return ret
+
+
     def __init__(self, init_verbose=1, default_knobs=True):
         """Build up the environment for compilation.
         """
